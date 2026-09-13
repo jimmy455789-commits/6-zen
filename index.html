@@ -338,13 +338,13 @@
     </div>
   </div>
 
-  <!-- 下方教學手冊：涵蓋所有元素規則 -->
+  <!-- 下方教學手冊 -->
   <div class="card">
     <h2>江氏小六壬核心元素與推演教學手冊</h2>
     
     <h3>1. 正確推演起卦步驟</h3>
     <ul class="guide-list">
-      <li><strong>大安起月</strong>：從 1(大安) 數起，按大安 $\rightarrow$ 留戀 $\rightarrow$ 速喜 $\rightarrow$ 赤口 $\rightarrow$ 小吉 $\rightarrow$ 空亡 順數月數，求得「月建落宮」。</li>
+      <li><strong>大安起月</strong>：從 1(大安) 數起，按 大安 → 留戀 → 速喜 → 赤口 → 小吉 → 空亡 順數月數，求得「月建落宮」。</li>
       <li><strong>月上起日</strong>：以「月建落宮」為初一，順數日數，求得「日建落宮」。</li>
       <li><strong>日上起時（定自身）</strong>：以「日建落宮」為子時(1)，順數時辰數，求得「時辰落宮」。<strong>時辰落宮即為「自身」（身宮）</strong>，代表問事者的現況與主體。</li>
     </ul>
@@ -363,12 +363,12 @@
         <tr>
           <td><strong>陽支盤</strong></td>
           <td>子(1)、寅(3)、辰(5)、午(7)、申(9)、戌(11)</td>
-          <td>以時辰所在陽支為基準，由身宮起順時針每宮<strong>跳一辰</strong>環排（例如：午 $\rightarrow$ 申 $\rightarrow$ 戌 $\rightarrow$ 子 $\rightarrow$ 寅 $\rightarrow$ 辰）。</td>
+          <td>以時辰所在陽支為基準，由身宮起順時針每宮<strong>跳一辰</strong>環排（例如：午 → 申 → 戌 → 子 → 寅 → 辰）。</td>
         </tr>
         <tr>
           <td><strong>陰支盤</strong></td>
           <td>丑(2)、卯(4)、巳(6)、未(8)、酉(10)、亥(12)</td>
-          <td>以時辰所在陰支為基準，由身宮起順時針每宮<strong>跳一辰</strong>環排（例如書中未時身臨空亡：未 $\rightarrow$ 酉 $\rightarrow$ 亥 $\rightarrow$ 丑 $\rightarrow$ 卯 $\rightarrow$ 巳）。</td>
+          <td>以時辰所在陰支為基準，由身宮起順時針每宮<strong>跳一辰</strong>環排（例如書中未時身臨空亡：未 → 酉 → 亥 → 丑 → 卯 → 巳）。</td>
         </tr>
       </tbody>
     </table>
@@ -424,17 +424,15 @@
 </div>
 
 <script>
-  // 宮位基礎定義
   const PALACES = [
-    { name: "大安", star: "土星", defaultBranch: "酉", element: "土", baseDesc: "主安泰身穩，行事步調平緩" },
-    { name: "留戀", star: "金星", defaultBranch: "亥", element: "木", baseDesc: "主事情牽連拖延，反覆難結" },
-    { name: "速喜", star: "水星", defaultBranch: "丑", element: "火", baseDesc: "主迅速應驗，吉慶臨門在即" },
-    { name: "赤口", star: "天空", defaultBranch: "卯", element: "金", baseDesc: "主口舌是非，交涉起釁，多凶險" },
-    { name: "小吉", star: "木星", defaultBranch: "巳", element: "水", baseDesc: "主合和吉慶，貴人相助，事有生機" },
-    { name: "空亡", star: "火星", defaultBranch: "未", element: "土", baseDesc: "主凡事落空，虛耗無功，如夢似幻" }
+    { name: "大安", star: "土星", defaultBranch: "酉", element: "土" },
+    { name: "留戀", star: "金星", defaultBranch: "亥", element: "木" },
+    { name: "速喜", star: "水星", defaultBranch: "丑", element: "火" },
+    { name: "赤口", star: "天空", defaultBranch: "卯", element: "金" },
+    { name: "小吉", star: "木星", defaultBranch: "巳", element: "水" },
+    { name: "空亡", star: "火星", defaultBranch: "未", element: "土" }
   ];
 
-  // 地支定義與五行屬性
   const BRANCHES = [
     { name: "子", num: 1, elem: "水", isYang: true },
     { name: "丑", num: 2, elem: "土", isYang: false },
@@ -450,13 +448,9 @@
     { name: "亥", num: 12, elem: "水", isYang: false }
   ];
 
-  const GODS = ["青龍", "朱雀", "勾陳", "騰蛇", "白虎", "玄武"];
-
-  // 五行生剋求六親 (base: 自身五行, target: 他宮地支五行)
   function getSixKin(baseElem, targetElem) {
     if (baseElem === targetElem) return "兄弟";
     
-    // 生我者父母
     if (
       (baseElem === "木" && targetElem === "水") ||
       (baseElem === "火" && targetElem === "木") ||
@@ -465,7 +459,6 @@
       (baseElem === "水" && targetElem === "金")
     ) return "父母";
 
-    // 我生者子孫
     if (
       (baseElem === "木" && targetElem === "火") ||
       (baseElem === "火" && targetElem === "土") ||
@@ -474,7 +467,6 @@
       (baseElem === "水" && targetElem === "木")
     ) return "子孫";
 
-    // 克我者官鬼
     if (
       (baseElem === "木" && targetElem === "金") ||
       (baseElem === "火" && targetElem === "水") ||
@@ -483,7 +475,6 @@
       (baseElem === "水" && targetElem === "土")
     ) return "官鬼";
 
-    // 我克者妻財
     if (
       (baseElem === "木" && targetElem === "土") ||
       (baseElem === "火" && targetElem === "金") ||
@@ -495,7 +486,6 @@
     return "未知";
   }
 
-  // 五行生剋文字斷
   function getElementRelationText(starElem, branchElem) {
     if (starElem === branchElem) return "比和相助";
     if (
@@ -525,7 +515,7 @@
   function setExample() {
     document.getElementById("monthInput").value = 4;
     document.getElementById("dayInput").value = 5;
-    document.getElementById("hourSelect").value = 8; // 未時
+    document.getElementById("hourSelect").value = 8;
     document.getElementById("categorySelect").value = "career";
     calculatePlate();
   }
@@ -545,24 +535,16 @@
 
     const hourBranchObj = BRANCHES[hourVal - 1];
 
-    // 1. 月上起課 (大安為 1)
     const monthPos = (month - 1) % 6;
-    // 2. 日上起課 (月落宮起初一)
     const dayPos = (monthPos + (day - 1)) % 6;
-    // 3. 時上起課 (日落宮起子時1)
-    const hourPos = (dayPos + (hourVal - 1)) % 6; // 此宮即「身宮（自身）」
+    const hourPos = (dayPos + (hourVal - 1)) % 6;
 
-    // 4. 陰陽跳辰排布
-    // 陽支按: 子, 寅, 辰, 午, 申, 戌 (隔一跳)
-    // 陰支按: 丑, 卯, 巳, 未, 酉, 亥 (隔一跳)
     const isYang = hourBranchObj.isYang;
     const subBranches = BRANCHES.filter(b => b.isYang === isYang);
     const startSubIndex = subBranches.findIndex(b => b.name === hourBranchObj.name);
 
-    // 建立 6 個宮位的盤面資訊陣列
     let plateData = new Array(6);
     for (let i = 0; i < 6; i++) {
-      // 宮位索引從 hourPos (身宮) 開始順推
       let palaceIndex = (hourPos + i) % 6;
       let branchIndex = (startSubIndex + i) % 6;
       let branchObj = subBranches[branchIndex];
@@ -580,13 +562,7 @@
       };
     }
 
-    // 身宮地支五行
     const bodyBranchElem = plateData[hourPos].branchElem;
-
-    // 5. 配六親與六神
-    // 六神以日宮或身宮排，這裡比照原書範例（自身臨騰蛇、赤口臨青龍）排布
-    // 書中順序為未宮起騰蛇、酉臨白虎、亥臨玄武、丑臨勾陳、卯臨青龍、巳臨朱雀
-    // 即從身宮起：騰蛇(0) -> 白虎(1) -> 玄武(2) -> 勾陳(3) -> 青龍(4) -> 朱雀(5)
     const godOrderFromCase = ["騰蛇", "白虎", "玄武", "勾陳", "青龍", "朱雀"];
 
     for (let i = 0; i < 6; i++) {
@@ -595,7 +571,6 @@
       plateData[currentPalace].kin = getSixKin(bodyBranchElem, plateData[currentPalace].branchElem);
     }
 
-    // 6. 用神目標鎖定
     let targetKin = "官鬼";
     if (category === "wealth") targetKin = "妻財";
     else if (category === "exam") targetKin = "父母";
@@ -604,12 +579,10 @@
 
     let targetPalaceIndex = plateData.findIndex(p => p.kin === targetKin);
 
-    // 7. 渲染 DOM 格子
     for (let i = 0; i < 6; i++) {
       const p = plateData[i];
       const cell = document.getElementById(`cell-${i}`);
       
-      // 樣式標記
       cell.className = "palace-cell";
       let isTarget = (i === targetPalaceIndex && category !== "health");
       if (p.isBody && isTarget) cell.classList.add("active-both");
@@ -636,7 +609,6 @@
       `;
     }
 
-    // 8. 產生批註
     generateInterpretation(plateData, hourPos, targetPalaceIndex, category, targetKin);
   }
 
@@ -647,7 +619,6 @@
 
     let textHtml = "";
 
-    // 自身斷語
     textHtml += `<div class="interp-item"><strong>1. 自身落宮（體現求問者主體狀態）：</strong><br>`;
     textHtml += `自身落於<strong>【${bodyPalace.palaceName}】</strong>，地支臨<strong>${bodyPalace.branch}</strong>，神煞加臨<strong>${bodyPalace.god}</strong>。<br>`;
     if (bodyPalace.palaceName === "空亡") {
@@ -668,12 +639,10 @@
     if (bodyPalace.god === "勾陳") textHtml += ` 併見勾陳，主拖延固執，進度緩滯。`;
     textHtml += `</div>`;
 
-    // 用神分析
     if (category !== "health") {
       textHtml += `<div class="interp-item"><strong>2. 所求用神【${targetKin}】斷語（事體吉凶成敗）：</strong><br>`;
       textHtml += `所問之事以【${targetKin}】為用神，落在<strong>【${targetPalace.palaceName}】</strong>，地支為<strong>${targetPalace.branch}</strong>，神煞加臨<strong>${targetPalace.god}</strong>。<br>`;
 
-      // 宮位與神煞生剋
       let starRel = getElementRelationText(targetPalace.star, targetPalace.branchElem);
       textHtml += `天星五行與地支生剋呈：<strong>${starRel}</strong>。<br>`;
 
@@ -696,7 +665,6 @@
       textHtml += `看病體專重自身與福德【子孫】。子孫宮落於【${plate.find(p => p.kin === '子孫').palaceName}】，若子孫旺相無傷，則制克疾厄有功，終能逢凶化吉；反之自身臨空亡赤口，防病體虛弱拖延。</div>`;
     }
 
-    // 綜合結論
     textHtml += `<div class="interp-item"><strong>3. 綜合評語總結：</strong><br>`;
     if (bodyPalace.palaceName === "空亡" || (targetPalace && targetPalace.palaceName === "赤口")) {
       textHtml += `盤象呈現「體虛用傷」之格局。自身落空虛耗，用神亦落凶克之位，總體謀劃易成鏡花水月，建議及早防範破局，靜守待時為宜。`;
@@ -710,7 +678,6 @@
     interpBox.innerHTML = textHtml;
   }
 
-  // 初始載入預設課例
   window.onload = function() {
     calculatePlate();
   };

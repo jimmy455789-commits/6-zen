@@ -65,10 +65,9 @@
       margin-top: 10px;
     }
 
-    /* 輸入區排版 */
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 16px;
       margin-bottom: 16px;
     }
@@ -119,7 +118,7 @@
       background-color: #555;
     }
 
-    /* 六宮格子排盤區 (仿掌訣 2列 x 3欄) */
+    /* 六宮格子 2列 x 3欄 */
     .plate-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -211,7 +210,6 @@
     .badge-day { background: #e67e22; }
     .badge-target { background: var(--accent); }
 
-    /* 解卦區域 */
     .interpretation-box {
       background: #fdfbf7;
       border-left: 5px solid var(--primary);
@@ -228,7 +226,6 @@
       color: var(--primary);
     }
 
-    /* 教學手冊表格與樣式 */
     .guide-table {
       width: 100%;
       border-collapse: collapse;
@@ -271,11 +268,11 @@
     <div class="form-grid">
       <div class="form-group">
         <label for="monthInput">月 (數值)</label>
-        <input type="number" id="monthInput" min="1" max="99" value="4">
+        <input type="number" id="monthInput" min="1" max="99" value="1">
       </div>
       <div class="form-group">
         <label for="dayInput">日 (數值)</label>
-        <input type="number" id="dayInput" min="1" max="99" value="5">
+        <input type="number" id="dayInput" min="1" max="99" value="1">
       </div>
       <div class="form-group">
         <label for="hourSelect">時辰 (地支)</label>
@@ -287,7 +284,7 @@
           <option value="5">辰時 (5 - 陽)</option>
           <option value="6">巳時 (6 - 陰)</option>
           <option value="7">午時 (7 - 陽)</option>
-          <option value="8" selected>未時 (8 - 陰)</option>
+          <option value="8">未時 (8 - 陰)</option>
           <option value="9">申時 (9 - 陽)</option>
           <option value="10">酉時 (10 - 陰)</option>
           <option value="11">戌時 (11 - 陽)</option>
@@ -297,23 +294,29 @@
       <div class="form-group">
         <label for="categorySelect">所求問事類別</label>
         <select id="categorySelect">
-          <option value="career">事業 / 求職 / 應徵 (官鬼)</option>
-          <option value="wealth">求財 / 經商 / 買賣 (妻財)</option>
-          <option value="exam">學業 / 考照 / 文書 (父母)</option>
-          <option value="health">自身安危 / 疾病 (自身/子孫)</option>
-          <option value="partnership">合夥 / 同儕 / 競爭 (兄弟)</option>
+          <option value="career">事業 / 應徵求職 / 升遷 (官鬼)</option>
+          <option value="exam">考試 / 證照公職 / 文書 (父母)</option>
+          <option value="wealth_direct">求財 / 薪資正財 / 經商賣買 (妻財)</option>
+          <option value="wealth_windfall">投資 / 偏財彩券 / 機會財 (妻財/子孫)</option>
+          <option value="love_female">感情婚姻 (女占問男友丈夫 - 官鬼)</option>
+          <option value="love_male">感情婚姻 (男占問女友妻子 - 妻財)</option>
+          <option value="health">疾病問癒 / 身體安危 (子孫/自身)</option>
+          <option value="travel">出外旅行 / 差旅平安 (子孫/父母)</option>
+          <option value="lawsuit">官非訴訟 / 爭訟是非 (官鬼/兄弟)</option>
+          <option value="lost">失物尋找 / 音信尋人 (妻財/父母)</option>
+          <option value="partnership">合夥創業 / 股東同儕 (兄弟)</option>
+          <option value="general">綜合理想 / 願望成敗 (身宮/子孫)</option>
         </select>
       </div>
     </div>
 
     <div class="button-group">
       <button onclick="calculatePlate()">排盤起課</button>
-      <button class="secondary" onclick="setExample()">載入書中課例 (四月初五未時)</button>
       <button class="secondary" onclick="randomRoll()">隨機抽數起卦</button>
     </div>
   </div>
 
-  <!-- 排盤結果展示 (2x3 掌盤佈局) -->
+  <!-- 排盤結果展示 -->
   <div class="card">
     <h2>六宮排盤盤面</h2>
     <div style="font-size: 0.9rem; color: #666; margin-top: 4px;">
@@ -331,14 +334,13 @@
       <div class="palace-cell" id="cell-4"></div>
     </div>
 
-    <!-- 簡易批註與斷語 -->
     <h2>課例批註解析</h2>
     <div class="interpretation-box" id="interpretation">
-      點擊上方「排盤起課」按鈕生成斷語。
+      點擊上方「排盤起課」生成斷語。
     </div>
   </div>
 
-  <!-- 下方教學手冊 -->
+  <!-- 教學手冊 -->
   <div class="card">
     <h2>江氏小六壬核心元素與推演教學手冊</h2>
     
@@ -368,7 +370,7 @@
         <tr>
           <td><strong>陰支盤</strong></td>
           <td>丑(2)、卯(4)、巳(6)、未(8)、酉(10)、亥(12)</td>
-          <td>以時辰所在陰支為基準，由身宮起順時針每宮<strong>跳一辰</strong>環排（例如書中未時身臨空亡：未 → 酉 → 亥 → 丑 → 卯 → 巳）。</td>
+          <td>以時辰所在陰支為基準，由身宮起順時針每宮<strong>跳一辰</strong>環排（例如：未 → 酉 → 亥 → 丑 → 卯 → 巳）。</td>
         </tr>
       </tbody>
     </table>
@@ -388,18 +390,18 @@
         <tr><td><strong>速喜 (2)</strong></td><td>水星</td><td>喜事即至，求財求吉在眼前，神速成效。</td></tr>
         <tr><td><strong>赤口 (3)</strong></td><td>天空</td><td>口舌是非，交涉防官非與小人，受克多凶。</td></tr>
         <tr><td><strong>小吉 (4)</strong></td><td>木星</td><td>吉慶合和，路上好商量，利於出行合作。</td></tr>
-        <tr><td><strong>空亡 (5)</strong></td><td>火星</td><td>事多虛花，空想落空，音信渺茫，防防空耗。</td></tr>
+        <tr><td><strong>空亡 (5)</strong></td><td>火星</td><td>事多虛花，空想落空，音信渺茫，防空耗。</td></tr>
       </tbody>
     </table>
 
     <h3>4. 六親生剋法則（以自身為立極點）</h3>
     <p>以<strong>時辰落宮（身宮）所落的地支五行</strong>為「我」，比對其餘各宮地支五行：</p>
     <ul class="guide-list">
-      <li><strong>生我者為【父母】</strong>：代表文書、印綬、長輩、房產、考試面試憑證。</li>
-      <li><strong>我生者為【子孫】</strong>：代表福德、解厄、解災、晚輩、產品成果。</li>
-      <li><strong>克我者為【官鬼】</strong>：代表功名、職位、官司、管理階層、壓力、病魔阻礙。</li>
-      <li><strong>我克者為【妻財】</strong>：代表錢財、資產、利潤、伴侶、商業交易。</li>
-      <li><strong>同我者為【兄弟】</strong>：代表同儕、合夥人、同輩競爭者、分財劫財之意。</li>
+      <li><strong>生我者為【父母】</strong>：代表文書、印綬、長輩、房產、考試面試憑證、車輛機票。</li>
+      <li><strong>我生者為【子孫】</strong>：代表福德、解厄、解災、醫藥、晚輩、產品獲利來源。</li>
+      <li><strong>克我者為【官鬼】</strong>：代表功名、職位、官司、壓力、病魔阻礙、女占夫星。</li>
+      <li><strong>我克者為【妻財】</strong>：代表錢財、利潤、伴侶、商業交易、男占妻星、貴重遺失物。</li>
+      <li><strong>同我者為【兄弟】</strong>：代表同儕、合夥人、同輩競爭者、分財劫財、官司原被告。</li>
     </ul>
 
     <h3>5. 六神（神煞）與問事用神註解</h3>
@@ -512,14 +514,6 @@
     return "地盤克天盤";
   }
 
-  function setExample() {
-    document.getElementById("monthInput").value = 4;
-    document.getElementById("dayInput").value = 5;
-    document.getElementById("hourSelect").value = 8;
-    document.getElementById("categorySelect").value = "career";
-    calculatePlate();
-  }
-
   function randomRoll() {
     document.getElementById("monthInput").value = Math.floor(Math.random() * 12) + 1;
     document.getElementById("dayInput").value = Math.floor(Math.random() * 30) + 1;
@@ -563,19 +557,69 @@
     }
 
     const bodyBranchElem = plateData[hourPos].branchElem;
-    const godOrderFromCase = ["騰蛇", "白虎", "玄武", "勾陳", "青龍", "朱雀"];
+    const godOrder = ["騰蛇", "白虎", "玄武", "勾陳", "青龍", "朱雀"];
 
     for (let i = 0; i < 6; i++) {
       let currentPalace = (hourPos + i) % 6;
-      plateData[currentPalace].god = godOrderFromCase[i];
+      plateData[currentPalace].god = godOrder[i];
       plateData[currentPalace].kin = getSixKin(bodyBranchElem, plateData[currentPalace].branchElem);
     }
 
+    // 依問事類別配對主要用神六親
     let targetKin = "官鬼";
-    if (category === "wealth") targetKin = "妻財";
-    else if (category === "exam") targetKin = "父母";
-    else if (category === "health") targetKin = "子孫";
-    else if (category === "partnership") targetKin = "兄弟";
+    let targetDesc = "職位官貴";
+
+    switch(category) {
+      case "career":
+        targetKin = "官鬼";
+        targetDesc = "事業官位/應徵主管";
+        break;
+      case "exam":
+        targetKin = "父母";
+        targetDesc = "考卷試績/文憑證照";
+        break;
+      case "wealth_direct":
+        targetKin = "妻財";
+        targetDesc = "營運正財/工資利潤";
+        break;
+      case "wealth_windfall":
+        targetKin = "妻財";
+        targetDesc = "投機偏財/獲利成果";
+        break;
+      case "love_female":
+        targetKin = "官鬼";
+        targetDesc = "男友夫星/良人正緣";
+        break;
+      case "love_male":
+        targetKin = "妻財";
+        targetDesc = "女友妻室/配偶緣分";
+        break;
+      case "health":
+        targetKin = "子孫";
+        targetDesc = "醫藥克煞/消災解難";
+        break;
+      case "travel":
+        targetKin = "父母";
+        targetDesc = "行程票券/出外庇佑";
+        break;
+      case "lawsuit":
+        targetKin = "官鬼";
+        targetDesc = "法官官司/爭訟判決";
+        break;
+      case "lost":
+        targetKin = "妻財";
+        targetDesc = "貴重財物/失物音訊";
+        break;
+      case "partnership":
+        targetKin = "兄弟";
+        targetDesc = "合作夥伴/同儕相挺";
+        break;
+      case "general":
+      default:
+        targetKin = "子孫";
+        targetDesc = "福德庇佑/吉慶所成";
+        break;
+    }
 
     let targetPalaceIndex = plateData.findIndex(p => p.kin === targetKin);
 
@@ -584,7 +628,7 @@
       const cell = document.getElementById(`cell-${i}`);
       
       cell.className = "palace-cell";
-      let isTarget = (i === targetPalaceIndex && category !== "health");
+      let isTarget = (i === targetPalaceIndex);
       if (p.isBody && isTarget) cell.classList.add("active-both");
       else if (p.isBody) cell.classList.add("active-body");
       else if (isTarget) cell.classList.add("active-target");
@@ -609,69 +653,91 @@
       `;
     }
 
-    generateInterpretation(plateData, hourPos, targetPalaceIndex, category, targetKin);
+    generateInterpretation(plateData, hourPos, targetPalaceIndex, category, targetKin, targetDesc);
   }
 
-  function generateInterpretation(plate, bodyIdx, targetIdx, category, targetKin) {
+  function generateInterpretation(plate, bodyIdx, targetIdx, category, targetKin, targetDesc) {
     const bodyPalace = plate[bodyIdx];
     const targetPalace = plate[targetIdx];
     const interpBox = document.getElementById("interpretation");
 
     let textHtml = "";
 
+    // 自身斷語
     textHtml += `<div class="interp-item"><strong>1. 自身落宮（體現求問者主體狀態）：</strong><br>`;
     textHtml += `自身落於<strong>【${bodyPalace.palaceName}】</strong>，地支臨<strong>${bodyPalace.branch}</strong>，神煞加臨<strong>${bodyPalace.god}</strong>。<br>`;
     if (bodyPalace.palaceName === "空亡") {
-      textHtml += `→ 自身臨空亡：主凡事懸空不實、空想難以落地、謀求易成泡影。`;
+      textHtml += `→ 自身臨空亡：主凡事懸空不實、空想難以落地、心浮氣躁易成泡影。`;
     } else if (bodyPalace.palaceName === "大安") {
-      textHtml += `→ 自身臨大安：主自身穩定，心態平順，求靜不求速動。`;
+      textHtml += `→ 自身臨大安：主自身穩定，心態平順，處事宜靜不求急躁。`;
     } else if (bodyPalace.palaceName === "留戀") {
       textHtml += `→ 自身臨留戀：主心意猶豫牽掛，進退維谷，事情牽絆遲延。`;
     } else if (bodyPalace.palaceName === "速喜") {
       textHtml += `→ 自身臨速喜：主自身積極外向，有近喜或即時應驗之機。`;
     } else if (bodyPalace.palaceName === "赤口") {
-      textHtml += `→ 自身臨赤口：主易起是非煩惱，性格急躁多阻，多見口舌。`;
+      textHtml += `→ 自身臨赤口：主易起是非煩惱，性格急躁多阻，多見口舌官非。`;
     } else if (bodyPalace.palaceName === "小吉") {
       textHtml += `→ 自身臨小吉：主吉善合和，求謀順遂，有貴人牽引。`;
     }
     if (bodyPalace.god === "騰蛇") textHtml += ` 併見騰蛇，主過程多有曲折變卦，內心疑慮驚恐不安。`;
-    if (bodyPalace.god === "朱雀") textHtml += ` 併見朱雀，主口舌是非纏身，或文書資訊頻仍。`;
+    if (bodyPalace.god === "朱雀") textHtml += ` 併見朱雀，主口舌是非纏身，或文書訊息紛亂。`;
     if (bodyPalace.god === "勾陳") textHtml += ` 併見勾陳，主拖延固執，進度緩滯。`;
     textHtml += `</div>`;
 
-    if (category !== "health") {
-      textHtml += `<div class="interp-item"><strong>2. 所求用神【${targetKin}】斷語（事體吉凶成敗）：</strong><br>`;
-      textHtml += `所問之事以【${targetKin}】為用神，落在<strong>【${targetPalace.palaceName}】</strong>，地支為<strong>${targetPalace.branch}</strong>，神煞加臨<strong>${targetPalace.god}</strong>。<br>`;
+    // 用神分析
+    textHtml += `<div class="interp-item"><strong>2. 所求用神【${targetKin}】（${targetDesc}）斷語：</strong><br>`;
+    textHtml += `所問之事以【${targetKin}】為用神，落在<strong>【${targetPalace.palaceName}】</strong>，地支為<strong>${targetPalace.branch}</strong>，神煞加臨<strong>${targetPalace.god}</strong>。<br>`;
 
-      let starRel = getElementRelationText(targetPalace.star, targetPalace.branchElem);
-      textHtml += `天星五行與地支生剋呈：<strong>${starRel}</strong>。<br>`;
+    let starRel = getElementRelationText(targetPalace.star, targetPalace.branchElem);
+    textHtml += `天星五行與地支生剋呈：<strong>${starRel}</strong>。<br>`;
 
-      if (targetPalace.palaceName === "赤口" || targetPalace.palaceName === "空亡") {
-        textHtml += `→ 用神臨<strong>${targetPalace.palaceName}</strong>，處不利受傷之地，主事情阻力重大，凶象居多，難言遂意。`;
-      } else if (targetPalace.palaceName === "大安" || targetPalace.palaceName === "速喜" || targetPalace.palaceName === "小吉") {
-        textHtml += `→ 用神臨<strong>${targetPalace.palaceName}</strong>，位處吉慶之宮，事有成局希望與生機。`;
+    // 依類別給予專屬斷語
+    if (category === "health") {
+      textHtml += `【疾病專論】：子孫為解厄制鬼之星。用神臨<strong>${targetPalace.palaceName}</strong>，`;
+      if (targetPalace.palaceName === "大安" || targetPalace.palaceName === "小吉" || targetPalace.palaceName === "速喜") {
+        textHtml += `子孫得力受生，主醫藥見效，調養得宜，有轉危為安之兆。`;
       } else {
-        textHtml += `→ 用神臨留戀，事體牽纏日久，短期難有定論，需耐心待時。`;
+        textHtml += `子孫受制落空，藥效有限，需防頑疾遷延，多注意隱疾突發。`;
       }
-
-      if (targetPalace.god === "青龍") {
-        textHtml += ` 遇青龍本主吉慶文職，然若宮位受克受制，則易演變為「青龍主虛或因吉生憂」。`;
-      } else if (targetPalace.god === "白虎") {
-        textHtml += ` 遇白虎加臨用神，防強大外力破壞、競爭對手猛烈或意外中挫。`;
+    } else if (category === "career" || category === "lawsuit") {
+      if (targetPalace.palaceName === "赤口" || targetPalace.palaceName === "空亡") {
+        textHtml += `用神臨凶煞之宮，求名恐遭駁回，涉訟多招口舌損失，凡事宜和解低調。`;
+      } else {
+        textHtml += `用神處安泰之宮，官星有氣，若逢青龍、小吉主受長官提拔或訴訟得直。`;
       }
-      textHtml += `</div>`;
+    } else if (category === "wealth_direct" || category === "wealth_windfall") {
+      if (targetPalace.palaceName === "空亡") {
+        textHtml += `財爻臨空亡，切莫投機，易有資金缺口或虛財無實；防受騙破財。`;
+      } else if (targetPalace.palaceName === "速喜" || targetPalace.palaceName === "大安") {
+        textHtml += `財星得位，得利在望，經營有條不紊，利潤可期。`;
+      } else {
+        textHtml += `財氣尚可但過程耗神牽連，需防合夥人分利或尾款拖欠。`;
+      }
+    } else if (category === "love_female" || category === "love_male") {
+      if (targetPalace.palaceName === "赤口") {
+        textHtml += `配偶星臨赤口，兩人相處易起言語摩擦、意見相左，防口角生隙。`;
+      } else if (targetPalace.palaceName === "小吉" || targetPalace.palaceName === "速喜") {
+        textHtml += `情緣吉順，彼此有默契吉慶，合和可期。`;
+      } else {
+        textHtml += `情緣牽絆遲緩，彼此心思不定，需多主動溝通以破沉悶之局。`;
+      }
     } else {
-      textHtml += `<div class="interp-item"><strong>2. 健康疾厄分析：</strong><br>`;
-      textHtml += `看病體專重自身與福德【子孫】。子孫宮落於【${plate.find(p => p.kin === '子孫').palaceName}】，若子孫旺相無傷，則制克疾厄有功，終能逢凶化吉；反之自身臨空亡赤口，防病體虛弱拖延。</div>`;
+      if (targetPalace.palaceName === "赤口" || targetPalace.palaceName === "空亡") {
+        textHtml += `用神臨<strong>${targetPalace.palaceName}</strong>，所託非人或事體阻力重重，凶象偏多。`;
+      } else {
+        textHtml += `用神臨<strong>${targetPalace.palaceName}</strong>，氣象明朗，吉神照應，所謀順遂。`;
+      }
     }
+    textHtml += `</div>`;
 
+    // 綜合結論
     textHtml += `<div class="interp-item"><strong>3. 綜合評語總結：</strong><br>`;
-    if (bodyPalace.palaceName === "空亡" || (targetPalace && targetPalace.palaceName === "赤口")) {
-      textHtml += `盤象呈現「體虛用傷」之格局。自身落空虛耗，用神亦落凶克之位，總體謀劃易成鏡花水月，建議及早防範破局，靜守待時為宜。`;
-    } else if (bodyPalace.palaceName === "大安" && targetPalace && (targetPalace.palaceName === "大安" || targetPalace.palaceName === "小吉")) {
-      textHtml += `身用俱安，吉星高照。雖進展未必疾速，但根基穩健，按部就班必有所獲。`;
+    if (bodyPalace.palaceName === "空亡" || targetPalace.palaceName === "赤口" || targetPalace.palaceName === "空亡") {
+      textHtml += `全局格局偏弱或受克制。自身多慮落空，所謀之事亦處阻力逆流之中，近期不宜冒進涉險，守常待變為吉。`;
+    } else if (bodyPalace.palaceName === "大安" && (targetPalace.palaceName === "大安" || targetPalace.palaceName === "小吉")) {
+      textHtml += `身安用健，水到渠成。步調宜循序漸進，穩紮穩打即可收穫豐美結果。`;
     } else {
-      textHtml += `成敗繫於人事溝通與時機，吉中藏阻，務必慎防拖延生變。`;
+      textHtml += `事情進程吉凶參半，成敗關鍵在於人事協調與把握良機，慎防因拖延而衍生事端。`;
     }
     textHtml += `</div>`;
 

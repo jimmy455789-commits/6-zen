@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>江氏小六壬排盤與詳解系統</title>
+  <style>
+    :root {
+      --bg-color: #f7f9fc;
+      --card-bg: #ffffff;
+      --text-color: #2c3e50;
+      --primary: #8b0000;
+      --border: #dcdfe6;
+      --highlight: #e74c3c;
+      --accent: #2980b9;
+      --tag-bg: #edf2f7;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 1px solid var(--border);
+    }
+
+    h1, h2, h3 {
+      color: var(--primary);
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      border-left: 4px solid var(--primary);
+      padding-left: 8px;
+      margin-top: 10px;
+    }
+
+    /* 輸入區排版 */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+
+    input, select, button {
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+    }
+
+    .button-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      cursor: pointer;
+      background-color: var(--primary);
+      color: white;
+      font-weight: bold;
+      border: none;
+      transition: opacity 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    button.secondary {
+      background-color: #555;
+    }
+
+    /* 六宮格子排盤區 (仿掌訣 2列 x 3欄) */
+    .plate-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .palace-cell {
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      background: #fafafa;
+      transition: all 0.3s ease;
+    }
+
+    .palace-cell.active-body {
+      border-color: var(--highlight);
+      background-color: #fff6f6;
+    }
+
+    .palace-cell.active-target {
+      border-color: var(--accent);
+      background-color: #f0f7fb;
+    }
+
+    .palace-cell.active-both {
+      border-color: #8e44ad;
+      background-color: #f9f0ff;
+    }
+
+    .palace-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .palace-center {
+      text-align: center;
+      margin: 8px 0;
+    }
+
+    .palace-branch {
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #111;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    .palace-kin {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .palace-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .palace-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    .markers {
+      display: flex;
+      gap: 4px;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .badge-body { background: var(--highlight); }
+    .badge-day { background: #e67e22; }
+    .badge-target { background: var(--accent); }
+
+    /* 解卦區域 */
+    .interpretation-box {
+      background: #fdfbf7;
+      border-left: 5px solid var(--primary);
+      padding: 16px;
+      margin-top: 15px;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .interp-item {
+      margin-bottom: 8px;
+    }
+
+    .interp-item strong {
+      color: var(--primary);
+    }
+
+    /* 教學手冊表格與樣式 */
+    .guide-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0 20px 0;
+      font-size: 0.95rem;
+    }
+
+    .guide-table th, .guide-table td {
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      text-align: left;
+    }
+
+    .guide-table th {
+      background-color: var(--tag-bg);
+      font-weight: bold;
+    }
+
+    .guide-table tr:nth-child(even) {
+      background-color: #fafbfc;
+    }
+
+    ul.guide-list {
+      padding-left: 20px;
+      margin-bottom: 16px;
+    }
+
+    ul.guide-list li {
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>江氏小六壬排盤與解課系統</h1>
+
+  <!-- 輸入設定 -->
+  <div class="card">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="monthInput">月 (數值)</label>
+        <input type="number" id="monthInput" min="1" max="99" value="4">
+      </div>
+      <div class="form-group">
+        <label for="dayInput">日 (數值)</label>
+        <input type="number" id="dayInput" min="1" max="99" value="5">
+      </div>
+      <div class="form-group">
+        <label for="hourSelect">時辰 (地支)</label>
+        <select id="hourSelect">
+          <option value="1">子時 (1 - 陽)</option>
+          <option value="2">丑時 (2 - 陰)</option>
+          <option value="3">寅時 (3 - 陽)</option>
+          <option value="4">卯時 (4 - 陰)</option>
+          <option value="5">辰時 (5 - 陽)</option>
+          <option value="6">巳時 (6 - 陰)</option>
+          <option value="7">午時 (7 - 陽)</option>
+          <option value="8" selected>未時 (8 - 陰)</option>
+          <option value="9">申時 (9 - 陽)</option>
+          <option value="10">酉時 (10 - 陰)</option>
+          <option value="11">戌時 (11 - 陽)</option>
+          <option value="12">亥時 (12 - 陰)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="categorySelect">所求問事類別</label>
+        <select id="categorySelect">
+          <option value="career">事業 / 求職 / 應徵 (官鬼)</option>
+          <option value="wealth">求財 / 經商 / 買賣 (妻財)</option>
+          <option value="exam">學業 / 考照 / 文書 (父母)</option>
+          <option value="health">自身安危 / 疾病 (自身/子孫)</option>
+          <option value="partnership">合夥 / 同儕 / 競爭 (兄弟)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <button onclick="calculatePlate()">排盤起課</button>
+      <button class="secondary" onclick="setExample()">載入書中課例 (四月初五未時)</button>
+      <button class="secondary" onclick="randomRoll()">隨機抽數起卦</button>
+    </div>
+  </div>
+
+  <!-- 排盤結果展示 (2x3 掌盤佈局) -->
+  <div class="card">
+    <h2>六宮排盤盤面</h2>
+    <div style="font-size: 0.9rem; color: #666; margin-top: 4px;">
+      * 掌訣順序配置：上排左至右為【留戀、速喜、赤口】，下排左至右為【大安、空亡、小吉】
+    </div>
+
+    <div class="plate-grid">
+      <!-- 上排 -->
+      <div class="palace-cell" id="cell-1"></div>
+      <div class="palace-cell" id="cell-2"></div>
+      <div class="palace-cell" id="cell-3"></div>
+      <!-- 下排 -->
+      <div class="palace-cell" id="cell-0"></div>
+      <div class="palace-cell" id="cell-5"></div>
+      <div class="palace-cell" id="cell-4"></div>
+    </div>
+
+    <!-- 簡易批註與斷語 -->
+    <h2>課例批註解析</h2>
+    <div class="interpretation-box" id="interpretation">
+      點擊上方「排盤起課」按鈕生成斷語。
+    </div>
+  </div>
+
+  <!-- 下方教學手冊：涵蓋所有元素規則 -->
+  <div class="card">
+    <h2>江氏小六壬核心元素與推演教學手冊</h2>
+    
+    <h3>1. 正確推演起卦步驟</h3>
+    <ul class="guide-list">
+      <li><strong>大安起月</strong>：從 1(大安) 數起，按大安 $\rightarrow$ 留戀 $\rightarrow$ 速喜 $\rightarrow$ 赤口 $\rightarrow$ 小吉 $\rightarrow$ 空亡 順數月數，求得「月建落宮」。</li>
+      <li><strong>月上起日</strong>：以「月建落宮」為初一，順數日數，求得「日建落宮」。</li>
+      <li><strong>日上起時（定自身）</strong>：以「日建落宮」為子時(1)，順數時辰數，求得「時辰落宮」。<strong>時辰落宮即為「自身」（身宮）</strong>，代表問事者的現況與主體。</li>
+    </ul>
+
+    <h3>2. 十二時辰與陰陽跳辰機制</h3>
+    <p>十二地支無法直接塞進六個宮位，因此本派採用<strong>「陰陽分治、隔位跳辰」</strong>法。以問事時辰歸屬決定全盤地支：</p>
+    <table class="guide-table">
+      <thead>
+        <tr>
+          <th>時辰分類</th>
+          <th>涵蓋地支與數值</th>
+          <th>六宮排盤流轉方式</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>陽支盤</strong></td>
+          <td>子(1)、寅(3)、辰(5)、午(7)、申(9)、戌(11)</td>
+          <td>以時辰所在陽支為基準，由身宮起順時針每宮<strong>跳一辰</strong>環排（例如：午 $\rightarrow$ 申 $\rightarrow$ 戌 $\rightarrow$ 子 $\rightarrow$ 寅 $\rightarrow$ 辰）。</td>
+        </tr>
+        <tr>
+          <td><strong>陰支盤</strong></td>
+          <td>丑(2)、卯(4)、巳(6)、未(8)、酉(10)、亥(12)</td>
+          <td>以時辰所在陰支為基準，由身宮起順時針每宮<strong>跳一辰</strong>環排（例如書中未時身臨空亡：未 $\rightarrow$ 酉 $\rightarrow$ 亥 $\rightarrow$ 丑 $\rightarrow$ 卯 $\rightarrow$ 巳）。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>3. 六宮底盤屬性與固定配置</h3>
+    <table class="guide-table">
+      <thead>
+        <tr>
+          <th>宮位</th>
+          <th>原局固定天星</th>
+          <th>傳統宮位吉凶意涵</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>大安 (0)</strong></td><td>土星</td><td>身不動時，逢吉昌，求謀舒展，安泰平穩。</td></tr>
+        <tr><td><strong>留戀 (1)</strong></td><td>金星</td><td>事難成，拖延牽連，未有定論，官事只宜和解。</td></tr>
+        <tr><td><strong>速喜 (2)</strong></td><td>水星</td><td>喜事即至，求財求吉在眼前，神速成效。</td></tr>
+        <tr><td><strong>赤口 (3)</strong></td><td>天空</td><td>口舌是非，交涉防官非與小人，受克多凶。</td></tr>
+        <tr><td><strong>小吉 (4)</strong></td><td>木星</td><td>吉慶合和，路上好商量，利於出行合作。</td></tr>
+        <tr><td><strong>空亡 (5)</strong></td><td>火星</td><td>事多虛花，空想落空，音信渺茫，防防空耗。</td></tr>
+      </tbody>
+    </table>
+
+    <h3>4. 六親生剋法則（以自身為立極點）</h3>
+    <p>以<strong>時辰落宮（身宮）所落的地支五行</strong>為「我」，比對其餘各宮地支五行：</p>
+    <ul class="guide-list">
+      <li><strong>生我者為【父母】</strong>：代表文書、印綬、長輩、房產、考試面試憑證。</li>
+      <li><strong>我生者為【子孫】</strong>：代表福德、解厄、解災、晚輩、產品成果。</li>
+      <li><strong>克我者為【官鬼】</strong>：代表功名、職位、官司、管理階層、壓力、病魔阻礙。</li>
+      <li><strong>我克者為【妻財】</strong>：代表錢財、資產、利潤、伴侶、商業交易。</li>
+      <li><strong>同我者為【兄弟】</strong>：代表同儕、合夥人、同輩競爭者、分財劫財之意。</li>
+    </ul>
+
+    <h3>5. 六神（神煞）與問事用神註解</h3>
+    <table class="guide-table">
+      <thead>
+        <tr>
+          <th>神煞</th>
+          <th>吉凶特性</th>
+          <th>常見占事效應</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>青龍</strong></td><td>吉神（木）</td><td>主文書喜慶、高升貴人、求職考試吉順。但臨凶宮亦主虛名虛喜。</td></tr>
+        <tr><td><strong>朱雀</strong></td><td>吉凶參半（火）</td><td>主文書、訊息、言詞溝通。凶則主口舌、是非宣騰、文書出錯。</td></tr>
+        <tr><td><strong>勾陳</strong></td><td>滯神（土）</td><td>主牽連、遲緩、阻滯、爭訟田土、事情難迅速解決。</td></tr>
+        <tr><td><strong>騰蛇</strong></td><td>凶神（火）</td><td>主驚恐、怪異、變卦反覆、虛驚不寧、事有曲折。</td></tr>
+        <tr><td><strong>白虎</strong></td><td>凶煞（金）</td><td>主血光、刑傷、強勢阻力、威權、意外受挫或爭鬥。</td></tr>
+        <tr><td><strong>玄武</strong></td><td>暗神（水）</td><td>主曖昧、暗算、盜竊、陰謀隱匿、錢財暗損。</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  // 宮位基礎定義
+  const PALACES = [
+    { name: "大安", star: "土星", defaultBranch: "酉", element: "土", baseDesc: "主安泰身穩，行事步調平緩" },
+    { name: "留戀", star: "金星", defaultBranch: "亥", element: "木", baseDesc: "主事情牽連拖延，反覆難結" },
+    { name: "速喜", star: "水星", defaultBranch: "丑", element: "火", baseDesc: "主迅速應驗，吉慶臨門在即" },
+    { name: "赤口", star: "天空", defaultBranch: "卯", element: "金", baseDesc: "主口舌是非，交涉起釁，多凶險" },
+    { name: "小吉", star: "木星", defaultBranch: "巳", element: "水", baseDesc: "主合和吉慶，貴人相助，事有生機" },
+    { name: "空亡", star: "火星", defaultBranch: "未", element: "土", baseDesc: "主凡事落空，虛耗無功，如夢似幻" }
+  ];
+
+  // 地支定義與五行屬性
+  const BRANCHES = [
+    { name: "子", num: 1, elem: "水", isYang: true },
+    { name: "丑", num: 2, elem: "土", isYang: false },
+    { name: "寅", num: 3, elem: "木", isYang: true },
+    { name: "卯", num: 4, elem: "木", isYang: false },
+    { name: "辰", num: 5, elem: "土", isYang: true },
+    { name: "巳", num: 6, elem: "火", isYang: false },
+    { name: "午", num: 7, elem: "火", isYang: true },
+    { name: "未", num: 8, elem: "土", isYang: false },
+    { name: "申", num: 9, elem: "金", isYang: true },
+    { name: "酉", num: 10, elem: "金", isYang: false },
+    { name: "戌", num: 11, elem: "土", isYang: true },
+    { name: "亥", num: 12, elem: "水", isYang: false }
+  ];
+
+  const GODS = ["青龍", "朱雀", "勾陳", "騰蛇", "白虎", "玄武"];
+
+  // 五行生剋求六親 (base: 自身五行, target: 他宮地支五行)
+  function getSixKin(baseElem, targetElem) {
+    if (baseElem === targetElem) return "兄弟";
+    
+    // 生我者父母
+    if (
+      (baseElem === "木" && targetElem === "水") ||
+      (baseElem === "火" && targetElem === "木") ||
+      (baseElem === "土" && targetElem === "火") ||
+      (baseElem === "金" && targetElem === "土") ||
+      (baseElem === "水" && targetElem === "金")
+    ) return "父母";
+
+    // 我生者子孫
+    if (
+      (baseElem === "木" && targetElem === "火") ||
+      (baseElem === "火" && targetElem === "土") ||
+      (baseElem === "土" && targetElem === "金") ||
+      (baseElem === "金" && targetElem === "水") ||
+      (baseElem === "水" && targetElem === "木")
+    ) return "子孫";
+
+    // 克我者官鬼
+    if (
+      (baseElem === "木" && targetElem === "金") ||
+      (baseElem === "火" && targetElem === "水") ||
+      (baseElem === "土" && targetElem === "木") ||
+      (baseElem === "金" && targetElem === "火") ||
+      (baseElem === "水" && targetElem === "土")
+    ) return "官鬼";
+
+    // 我克者妻財
+    if (
+      (baseElem === "木" && targetElem === "土") ||
+      (baseElem === "火" && targetElem === "金") ||
+      (baseElem === "土" && targetElem === "水") ||
+      (baseElem === "金" && targetElem === "木") ||
+      (baseElem === "水" && targetElem === "火")
+    ) return "妻財";
+
+    return "未知";
+  }
+
+  // 五行生剋文字斷
+  function getElementRelationText(starElem, branchElem) {
+    if (starElem === branchElem) return "比和相助";
+    if (
+      (starElem === "木" && branchElem === "水") ||
+      (starElem === "火" && branchElem === "木") ||
+      (starElem === "土" && branchElem === "火") ||
+      (starElem === "金" && branchElem === "土") ||
+      (starElem === "水" && branchElem === "金")
+    ) return "地盤生天盤(地生天)";
+    if (
+      (starElem === "木" && branchElem === "火") ||
+      (starElem === "火" && branchElem === "土") ||
+      (starElem === "土" && branchElem === "金") ||
+      (starElem === "金" && branchElem === "水") ||
+      (starElem === "水" && branchElem === "木")
+    ) return "天盤生地盤(天生地)";
+    if (
+      (starElem === "金" && branchElem === "木") ||
+      (starElem === "火" && branchElem === "金") ||
+      (starElem === "水" && branchElem === "火") ||
+      (starElem === "土" && branchElem === "水") ||
+      (starElem === "木" && branchElem === "土")
+    ) return "天盤克地盤(受克主凶)";
+    return "地盤克天盤";
+  }
+
+  function setExample() {
+    document.getElementById("monthInput").value = 4;
+    document.getElementById("dayInput").value = 5;
+    document.getElementById("hourSelect").value = 8; // 未時
+    document.getElementById("categorySelect").value = "career";
+    calculatePlate();
+  }
+
+  function randomRoll() {
+    document.getElementById("monthInput").value = Math.floor(Math.random() * 12) + 1;
+    document.getElementById("dayInput").value = Math.floor(Math.random() * 30) + 1;
+    document.getElementById("hourSelect").value = Math.floor(Math.random() * 12) + 1;
+    calculatePlate();
+  }
+
+  function calculatePlate() {
+    const month = parseInt(document.getElementById("monthInput").value) || 1;
+    const day = parseInt(document.getElementById("dayInput").value) || 1;
+    const hourVal = parseInt(document.getElementById("hourSelect").value) || 1;
+    const category = document.getElementById("categorySelect").value;
+
+    const hourBranchObj = BRANCHES[hourVal - 1];
+
+    // 1. 月上起課 (大安為 1)
+    const monthPos = (month - 1) % 6;
+    // 2. 日上起課 (月落宮起初一)
+    const dayPos = (monthPos + (day - 1)) % 6;
+    // 3. 時上起課 (日落宮起子時1)
+    const hourPos = (dayPos + (hourVal - 1)) % 6; // 此宮即「身宮（自身）」
+
+    // 4. 陰陽跳辰排布
+    // 陽支按: 子, 寅, 辰, 午, 申, 戌 (隔一跳)
+    // 陰支按: 丑, 卯, 巳, 未, 酉, 亥 (隔一跳)
+    const isYang = hourBranchObj.isYang;
+    const subBranches = BRANCHES.filter(b => b.isYang === isYang);
+    const startSubIndex = subBranches.findIndex(b => b.name === hourBranchObj.name);
+
+    // 建立 6 個宮位的盤面資訊陣列
+    let plateData = new Array(6);
+    for (let i = 0; i < 6; i++) {
+      // 宮位索引從 hourPos (身宮) 開始順推
+      let palaceIndex = (hourPos + i) % 6;
+      let branchIndex = (startSubIndex + i) % 6;
+      let branchObj = subBranches[branchIndex];
+
+      plateData[palaceIndex] = {
+        palaceIndex: palaceIndex,
+        palaceName: PALACES[palaceIndex].name,
+        star: PALACES[palaceIndex].star,
+        branch: branchObj.name,
+        branchElem: branchObj.elem,
+        isBody: (palaceIndex === hourPos),
+        isDay: (palaceIndex === dayPos),
+        god: "",
+        kin: ""
+      };
+    }
+
+    // 身宮地支五行
+    const bodyBranchElem = plateData[hourPos].branchElem;
+
+    // 5. 配六親與六神
+    // 六神以日宮或身宮排，這裡比照原書範例（自身臨騰蛇、赤口臨青龍）排布
+    // 書中順序為未宮起騰蛇、酉臨白虎、亥臨玄武、丑臨勾陳、卯臨青龍、巳臨朱雀
+    // 即從身宮起：騰蛇(0) -> 白虎(1) -> 玄武(2) -> 勾陳(3) -> 青龍(4) -> 朱雀(5)
+    const godOrderFromCase = ["騰蛇", "白虎", "玄武", "勾陳", "青龍", "朱雀"];
+
+    for (let i = 0; i < 6; i++) {
+      let currentPalace = (hourPos + i) % 6;
+      plateData[currentPalace].god = godOrderFromCase[i];
+      plateData[currentPalace].kin = getSixKin(bodyBranchElem, plateData[currentPalace].branchElem);
+    }
+
+    // 6. 用神目標鎖定
+    let targetKin = "官鬼";
+    if (category === "wealth") targetKin = "妻財";
+    else if (category === "exam") targetKin = "父母";
+    else if (category === "health") targetKin = "子孫";
+    else if (category === "partnership") targetKin = "兄弟";
+
+    let targetPalaceIndex = plateData.findIndex(p => p.kin === targetKin);
+
+    // 7. 渲染 DOM 格子
+    for (let i = 0; i < 6; i++) {
+      const p = plateData[i];
+      const cell = document.getElementById(`cell-${i}`);
+      
+      // 樣式標記
+      cell.className = "palace-cell";
+      let isTarget = (i === targetPalaceIndex && category !== "health");
+      if (p.isBody && isTarget) cell.classList.add("active-both");
+      else if (p.isBody) cell.classList.add("active-body");
+      else if (isTarget) cell.classList.add("active-target");
+
+      cell.innerHTML = `
+        <div class="palace-header">
+          <span>${p.god}</span>
+          <span>${p.star}</span>
+        </div>
+        <div class="palace-center">
+          <span class="palace-branch">${p.branch}</span>
+          <span class="palace-kin">${p.kin}</span>
+        </div>
+        <div class="palace-footer">
+          <span class="palace-name">${p.palaceName}</span>
+          <div class="markers">
+            ${p.isDay ? '<span class="badge badge-day">日</span>' : ''}
+            ${p.isBody ? '<span class="badge badge-body">身/時</span>' : ''}
+            ${isTarget ? '<span class="badge badge-target">用神</span>' : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    // 8. 產生批註
+    generateInterpretation(plateData, hourPos, targetPalaceIndex, category, targetKin);
+  }
+
+  function generateInterpretation(plate, bodyIdx, targetIdx, category, targetKin) {
+    const bodyPalace = plate[bodyIdx];
+    const targetPalace = plate[targetIdx];
+    const interpBox = document.getElementById("interpretation");
+
+    let textHtml = "";
+
+    // 自身斷語
+    textHtml += `<div class="interp-item"><strong>1. 自身落宮（體現求問者主體狀態）：</strong><br>`;
+    textHtml += `自身落於<strong>【${bodyPalace.palaceName}】</strong>，地支臨<strong>${bodyPalace.branch}</strong>，神煞加臨<strong>${bodyPalace.god}</strong>。<br>`;
+    if (bodyPalace.palaceName === "空亡") {
+      textHtml += `→ 自身臨空亡：主凡事懸空不實、空想難以落地、謀求易成泡影。`;
+    } else if (bodyPalace.palaceName === "大安") {
+      textHtml += `→ 自身臨大安：主自身穩定，心態平順，求靜不求速動。`;
+    } else if (bodyPalace.palaceName === "留戀") {
+      textHtml += `→ 自身臨留戀：主心意猶豫牽掛，進退維谷，事情牽絆遲延。`;
+    } else if (bodyPalace.palaceName === "速喜") {
+      textHtml += `→ 自身臨速喜：主自身積極外向，有近喜或即時應驗之機。`;
+    } else if (bodyPalace.palaceName === "赤口") {
+      textHtml += `→ 自身臨赤口：主易起是非煩惱，性格急躁多阻，多見口舌。`;
+    } else if (bodyPalace.palaceName === "小吉") {
+      textHtml += `→ 自身臨小吉：主吉善合和，求謀順遂，有貴人牽引。`;
+    }
+    if (bodyPalace.god === "騰蛇") textHtml += ` 併見騰蛇，主過程多有曲折變卦，內心疑慮驚恐不安。`;
+    if (bodyPalace.god === "朱雀") textHtml += ` 併見朱雀，主口舌是非纏身，或文書資訊頻仍。`;
+    if (bodyPalace.god === "勾陳") textHtml += ` 併見勾陳，主拖延固執，進度緩滯。`;
+    textHtml += `</div>`;
+
+    // 用神分析
+    if (category !== "health") {
+      textHtml += `<div class="interp-item"><strong>2. 所求用神【${targetKin}】斷語（事體吉凶成敗）：</strong><br>`;
+      textHtml += `所問之事以【${targetKin}】為用神，落在<strong>【${targetPalace.palaceName}】</strong>，地支為<strong>${targetPalace.branch}</strong>，神煞加臨<strong>${targetPalace.god}</strong>。<br>`;
+
+      // 宮位與神煞生剋
+      let starRel = getElementRelationText(targetPalace.star, targetPalace.branchElem);
+      textHtml += `天星五行與地支生剋呈：<strong>${starRel}</strong>。<br>`;
+
+      if (targetPalace.palaceName === "赤口" || targetPalace.palaceName === "空亡") {
+        textHtml += `→ 用神臨<strong>${targetPalace.palaceName}</strong>，處不利受傷之地，主事情阻力重大，凶象居多，難言遂意。`;
+      } else if (targetPalace.palaceName === "大安" || targetPalace.palaceName === "速喜" || targetPalace.palaceName === "小吉") {
+        textHtml += `→ 用神臨<strong>${targetPalace.palaceName}</strong>，位處吉慶之宮，事有成局希望與生機。`;
+      } else {
+        textHtml += `→ 用神臨留戀，事體牽纏日久，短期難有定論，需耐心待時。`;
+      }
+
+      if (targetPalace.god === "青龍") {
+        textHtml += ` 遇青龍本主吉慶文職，然若宮位受克受制，則易演變為「青龍主虛或因吉生憂」。`;
+      } else if (targetPalace.god === "白虎") {
+        textHtml += ` 遇白虎加臨用神，防強大外力破壞、競爭對手猛烈或意外中挫。`;
+      }
+      textHtml += `</div>`;
+    } else {
+      textHtml += `<div class="interp-item"><strong>2. 健康疾厄分析：</strong><br>`;
+      textHtml += `看病體專重自身與福德【子孫】。子孫宮落於【${plate.find(p => p.kin === '子孫').palaceName}】，若子孫旺相無傷，則制克疾厄有功，終能逢凶化吉；反之自身臨空亡赤口，防病體虛弱拖延。</div>`;
+    }
+
+    // 綜合結論
+    textHtml += `<div class="interp-item"><strong>3. 綜合評語總結：</strong><br>`;
+    if (bodyPalace.palaceName === "空亡" || (targetPalace && targetPalace.palaceName === "赤口")) {
+      textHtml += `盤象呈現「體虛用傷」之格局。自身落空虛耗，用神亦落凶克之位，總體謀劃易成鏡花水月，建議及早防範破局，靜守待時為宜。`;
+    } else if (bodyPalace.palaceName === "大安" && targetPalace && (targetPalace.palaceName === "大安" || targetPalace.palaceName === "小吉")) {
+      textHtml += `身用俱安，吉星高照。雖進展未必疾速，但根基穩健，按部就班必有所獲。`;
+    } else {
+      textHtml += `成敗繫於人事溝通與時機，吉中藏阻，務必慎防拖延生變。`;
+    }
+    textHtml += `</div>`;
+
+    interpBox.innerHTML = textHtml;
+  }
+
+  // 初始載入預設課例
+  window.onload = function() {
+    calculatePlate();
+  };
+</script>
+
+</body>
+</html>
